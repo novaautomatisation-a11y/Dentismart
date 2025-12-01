@@ -1,0 +1,75 @@
+// middleware.ts
+/**
+ * Middleware Next.js pour gérer l'authentification
+ * - Protège les routes /dashboard et /api
+ * - Redirige vers /login si non authentifié
+ * - Rafraîchit automatiquement la session Supabase
+ */
+
+import { createServerClient } from '@supabase/ssr'
+import { NextResponse, type NextRequest } from 'next/server'
+
+export async function middleware(request: NextRequest) {
+  let supabaseResponse = NextResponse.next({
+    request,
+  })
+
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return request.cookies.getAll()
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
+          supabaseResponse = NextResponse.next({
+            request,
+          })
+          cookiesToSet.forEach(({ name, value, options }) =>
+            supabaseResponse.cookies.set(name, value, options)
+          )
+        },
+      },
+    }
+  )
+
+  // Rafraîchir la session (important pour la persistance)
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  // Routes publiques
+  const publicRoutes = ['/login']
+  const isPublicRoute = publicRoutes.includes(request.nextUrl.pathname)
+
+  // Si non connecté et route protégée -> redirect login
+  if (!user && !isPublicRoute) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/login'
+    return NextResponse.redirect(url)
+  }
+
+  // Si connecté et sur /login -> redirect dashboard
+  if (user && request.nextUrl.pathname === '/login') {
+    const url = request.nextUrl.clone()
+    url.pathname = '/dashboard'
+    return NextResponse.redirect(url)
+  }
+
+  return supabaseResponse
+}
+
+export const config = {
+  matcher: [
+    /*
+     * Match all request paths except:
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * - public folder
+     */
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+  ],
+}
