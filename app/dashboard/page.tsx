@@ -124,17 +124,47 @@ export default async function DashboardPage() {
           />
         </div>
 
-        {/* Placeholder for future sections */}
+        {/* Actions rapides */}
         <div className="mt-8 bg-white rounded-lg shadow p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">
-            Prochaines fonctionnalités
+            Actions rapides
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <a
+              href="/patients"
+              className="flex items-center p-4 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-colors"
+            >
+              <div className="text-3xl mr-4">👥</div>
+              <div>
+                <h4 className="font-semibold text-gray-900">Gérer les patients</h4>
+                <p className="text-sm text-gray-600">Ajouter, modifier, consulter</p>
+              </div>
+            </a>
+
+            <a
+              href="/rendezvous"
+              className="flex items-center p-4 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-colors"
+            >
+              <div className="text-3xl mr-4">📅</div>
+              <div>
+                <h4 className="font-semibold text-gray-900">Gérer les rendez-vous</h4>
+                <p className="text-sm text-gray-600">Planning, rappels SMS</p>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        {/* Fonctionnalités */}
+        <div className="mt-6 bg-white rounded-lg shadow p-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            Fonctionnalités disponibles
           </h3>
           <ul className="space-y-2 text-sm text-gray-600">
             <li>✅ Authentification sécurisée multi-tenant</li>
             <li>✅ Dashboard avec statistiques en temps réel</li>
-            <li>🔜 Gestion des patients (PHASE 2)</li>
-            <li>🔜 Gestion des rendez-vous (PHASE 2)</li>
-            <li>🔜 Envoi automatique de rappels SMS (PHASE 2)</li>
+            <li>✅ Gestion des patients (PHASE 2)</li>
+            <li>✅ Gestion des rendez-vous (PHASE 2)</li>
+            <li>🔜 Envoi automatique de rappels SMS (en cours)</li>
             <li>🔜 Demandes d'avis Google automatisées</li>
           </ul>
         </div>
