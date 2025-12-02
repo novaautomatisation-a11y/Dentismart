@@ -17,8 +17,8 @@ interface Patient {
   created_at: string
   dentiste_id: string | null
   dentistes: {
-    id: string
-    full_name: string
+    id: string | any
+    full_name: string | any
   } | null
 }
 
