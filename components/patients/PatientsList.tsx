@@ -7,6 +7,11 @@
 
 import { useState } from 'react'
 
+interface Dentiste {
+  id: string | any
+  full_name: string | any
+}
+
 interface Patient {
   id: string
   first_name: string
@@ -16,10 +21,7 @@ interface Patient {
   language: string | null
   created_at: string
   dentiste_id: string | null
-  dentistes: {
-    id: string | any
-    full_name: string | any
-  } | null
+  dentistes: Dentiste[] | Dentiste | null
 }
 
 interface PatientsListProps {
@@ -98,7 +100,9 @@ export default function PatientsList({ patients: initialPatients }: PatientsList
 
                   {patient.dentistes && (
                     <div className="mt-1 text-xs text-gray-500">
-                      👨‍⚕️ {patient.dentistes.full_name}
+                      👨‍⚕️ {Array.isArray(patient.dentistes)
+                        ? patient.dentistes[0]?.full_name
+                        : patient.dentistes.full_name}
                     </div>
                   )}
                 </div>
