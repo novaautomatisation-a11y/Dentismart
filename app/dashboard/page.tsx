@@ -10,6 +10,9 @@ import { createClient } from '@/lib/supabase/server'
 import StatsCard from '@/components/dashboard/StatsCard'
 import LogoutButton from '@/components/dashboard/LogoutButton'
 
+// Force dynamic rendering (no static prerendering at build time)
+export const dynamic = 'force-dynamic'
+
 export default async function DashboardPage() {
   const supabase = await createClient()
 
