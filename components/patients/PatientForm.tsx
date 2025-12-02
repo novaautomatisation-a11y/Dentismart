@@ -27,6 +27,7 @@ export default function PatientForm({ dentistes, cabinetId }: PatientFormProps) 
   const [email, setEmail] = useState('')
   const [language, setLanguage] = useState('fr')
   const [dentisteId, setDentisteId] = useState('')
+  const [acceptsShortNotice, setAcceptsShortNotice] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
@@ -49,6 +50,7 @@ export default function PatientForm({ dentistes, cabinetId }: PatientFormProps) 
         phone,
         email: email || null,
         language,
+        accepts_short_notice: acceptsShortNotice,
       })
 
       if (insertError) {
@@ -68,6 +70,7 @@ export default function PatientForm({ dentistes, cabinetId }: PatientFormProps) 
       setEmail('')
       setLanguage('fr')
       setDentisteId('')
+      setAcceptsShortNotice(false)
 
       // Rafraîchir la page pour afficher le nouveau patient
       router.refresh()
@@ -186,6 +189,19 @@ export default function PatientForm({ dentistes, cabinetId }: PatientFormProps) 
               </option>
             ))}
           </select>
+        </div>
+
+        <div className="flex items-center">
+          <input
+            id="acceptsShortNotice"
+            type="checkbox"
+            checked={acceptsShortNotice}
+            onChange={(e) => setAcceptsShortNotice(e.target.checked)}
+            className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+          />
+          <label htmlFor="acceptsShortNotice" className="ml-2 block text-sm text-gray-700">
+            ⏰ Accepte les créneaux de dernière minute (moins de 48h)
+          </label>
         </div>
 
         <button

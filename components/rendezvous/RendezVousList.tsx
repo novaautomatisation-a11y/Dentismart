@@ -75,6 +75,34 @@ export default function RendezVousList({ rendezVous: initialRendezVous }: { rend
     setLoading(null)
   }
 
+  const handleLastMinuteOffer = async (rdvId: string) => {
+    if (!confirm('Proposer ce créneau à des patients flexibles ?')) return
+
+    setLoading(rdvId)
+    const response = await fetch('/api/rendezvous/last-minute-notify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ rendezVousId: rdvId }),
+    })
+
+    const data = await response.json()
+    if (data.success) {
+      alert(`${data.count} patient(s) flexible(s) notifié(s) !`)
+    } else {
+      alert(`Erreur : ${data.error}`)
+    }
+    setLoading(null)
+  }
+
+  // Helper pour vérifier si un RDV annulé est dans moins de 48h
+  const isLastMinuteCancel = (rdv: RendezVous): boolean => {
+    if (rdv.status !== 'cancelled') return false
+    const rdvDate = new Date(rdv.starts_at)
+    const now = new Date()
+    const hoursUntil = (rdvDate.getTime() - now.getTime()) / (1000 * 60 * 60)
+    return hoursUntil > 0 && hoursUntil <= 48
+  }
+
   return (
     <div className="bg-white rounded-lg shadow">
       <div className="p-6 border-b border-gray-200">
@@ -150,6 +178,16 @@ export default function RendezVousList({ rendezVous: initialRendezVous }: { rend
                   >
                     📱 Rappel SMS
                   </button>
+
+                  {isLastMinuteCancel(rdv) && (
+                    <button
+                      onClick={() => handleLastMinuteOffer(rdv.id)}
+                      disabled={loading === rdv.id}
+                      className="text-xs px-3 py-1 bg-orange-600 text-white rounded hover:bg-orange-700 disabled:opacity-50"
+                    >
+                      ⏰ Proposer créneau
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
