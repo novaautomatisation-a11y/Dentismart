@@ -5,13 +5,26 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
+interface Dentiste {
+  id: string | any
+  full_name: string | any
+}
+
+interface Patient {
+  id: string | any
+  first_name: string | any
+  last_name: string | any
+  phone: string | any
+  email: string | null | any
+}
+
 interface RendezVous {
   id: string
   starts_at: string
   status: 'scheduled' | 'confirmed' | 'completed' | 'cancelled' | 'no_show'
   notes: string | null
-  dentistes: { id: string; full_name: string } | null
-  patients: { id: string; first_name: string; last_name: string; phone: string; email: string | null } | null
+  dentistes: Dentiste[] | Dentiste | null
+  patients: Patient[] | Patient | null
 }
 
 const statusLabels = {
@@ -91,13 +104,21 @@ export default function RendezVousList({ rendezVous: initialRendezVous }: { rend
 
                   {rdv.patients && (
                     <div className="mt-1 text-sm text-gray-700">
-                      👤 {rdv.patients.first_name} {rdv.patients.last_name} • 📞 {rdv.patients.phone}
+                      👤 {Array.isArray(rdv.patients)
+                        ? `${rdv.patients[0]?.first_name} ${rdv.patients[0]?.last_name}`
+                        : `${rdv.patients.first_name} ${rdv.patients.last_name}`}
+                      {' • 📞 '}
+                      {Array.isArray(rdv.patients)
+                        ? rdv.patients[0]?.phone
+                        : rdv.patients.phone}
                     </div>
                   )}
 
                   {rdv.dentistes && (
                     <div className="mt-1 text-xs text-gray-500">
-                      👨‍⚕️ {rdv.dentistes.full_name}
+                      👨‍⚕️ {Array.isArray(rdv.dentistes)
+                        ? rdv.dentistes[0]?.full_name
+                        : rdv.dentistes.full_name}
                     </div>
                   )}
 
