@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Database } from '@/lib/types/database.types'
+import { LanguageSwitcher } from './LanguageSwitcher'
 
 type UserProfile = Database['public']['Tables']['profiles']['Row']
 
@@ -175,12 +176,7 @@ export function AppShell({ children, user, cabinetName }: AppShellProps) {
             </div>
 
             {/* Language Selector */}
-            <div className="relative">
-              <button className="flex items-center gap-2 px-3 py-1.5 text-sm border rounded-lg hover:bg-gray-50">
-                <span>🌐</span>
-                <span className="hidden sm:inline">{user.locale?.split('-')[0].toUpperCase() || 'FR'}</span>
-              </button>
-            </div>
+            <LanguageSwitcher currentLocale={user.locale} userId={user.id} />
 
             {/* Profile Menu */}
             <div className="relative">
